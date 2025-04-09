@@ -36,23 +36,30 @@
     },
     {
       "cell_type": "code",
-      "execution_count": 59,
+      "execution_count": 63,
       "metadata": {
         "id": "-t-zM4ul3wCl"
       },
       "outputs": [],
       "source": [
-        "import numpy as np\n",
+        "import streamlit as st\n",
         "import pandas as pd\n",
+        "import numpy as np\n",
         "import matplotlib.pyplot as plt\n",
         "import seaborn as sns\n",
-        "from sklearn import metrics\n",
-        "import streamlit as st\n"
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.ensemble import RandomForestClassifier\n",
+        "from sklearn.linear_model import LogisticRegression\n",
+        "from sklearn.metrics import classification_report, confusion_matrix, roc_curve, roc_auc_score\n",
+        "from sklearn.calibration import CalibratedClassifierCV\n",
+        "from sklearn.svm import LinearSVC\n",
+        "from sklearn.neighbors import KNeighborsClassifier\n",
+        "from sklearn.naive_bayes import GaussianNB\n"
       ]
     },
     {
       "cell_type": "code",
-      "execution_count": null,
+      "execution_count": 64,
       "metadata": {
         "id": "MzOa80-I3wCm"
       },
@@ -64,14 +71,14 @@
     },
     {
       "cell_type": "code",
-      "execution_count": null,
+      "execution_count": 65,
       "metadata": {
         "id": "aQqnZZC63wCm",
         "colab": {
           "base_uri": "https://localhost:8080/",
           "height": 256
         },
-        "outputId": "281850e1-70d2-483e-f155-1a5c314a2824"
+        "outputId": "dd34e80d-f831-4b3d-d424-8c2576346ec4"
       },
       "outputs": [
         {
@@ -124,7 +131,7 @@
             ],
             "text/html": [
               "\n",
-              "  <div id=\"df-4ab8991f-2601-421d-b91f-ae62bb5f0882\" class=\"colab-df-container\">\n",
+              "  <div id=\"df-6658241f-3acd-4cff-ba80-75a58e4c8e78\" class=\"colab-df-container\">\n",
               "    <div>\n",
               "<style scoped>\n",
               "    .dataframe tbody tr th:only-of-type {\n",
@@ -294,7 +301,7 @@
               "    <div class=\"colab-df-buttons\">\n",
               "\n",
               "  <div class=\"colab-df-container\">\n",
-              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-4ab8991f-2601-421d-b91f-ae62bb5f0882')\"\n",
+              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-6658241f-3acd-4cff-ba80-75a58e4c8e78')\"\n",
               "            title=\"Convert this dataframe to an interactive table.\"\n",
               "            style=\"display:none;\">\n",
               "\n",
@@ -346,12 +353,12 @@
               "\n",
               "    <script>\n",
               "      const buttonEl =\n",
-              "        document.querySelector('#df-4ab8991f-2601-421d-b91f-ae62bb5f0882 button.colab-df-convert');\n",
+              "        document.querySelector('#df-6658241f-3acd-4cff-ba80-75a58e4c8e78 button.colab-df-convert');\n",
               "      buttonEl.style.display =\n",
               "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
               "\n",
               "      async function convertToInteractive(key) {\n",
-              "        const element = document.querySelector('#df-4ab8991f-2601-421d-b91f-ae62bb5f0882');\n",
+              "        const element = document.querySelector('#df-6658241f-3acd-4cff-ba80-75a58e4c8e78');\n",
               "        const dataTable =\n",
               "          await google.colab.kernel.invokeFunction('convertToInteractive',\n",
               "                                                    [key], {});\n",
@@ -371,8 +378,8 @@
               "  </div>\n",
               "\n",
               "\n",
-              "<div id=\"df-b153dc4a-4687-4603-a72a-c4f6ba31df3c\">\n",
-              "  <button class=\"colab-df-quickchart\" onclick=\"quickchart('df-b153dc4a-4687-4603-a72a-c4f6ba31df3c')\"\n",
+              "<div id=\"df-a8fbea75-1d97-485e-bbd1-fad72feba118\">\n",
+              "  <button class=\"colab-df-quickchart\" onclick=\"quickchart('df-a8fbea75-1d97-485e-bbd1-fad72feba118')\"\n",
               "            title=\"Suggest charts\"\n",
               "            style=\"display:none;\">\n",
               "\n",
@@ -491,7 +498,7 @@
               "    }\n",
               "    (() => {\n",
               "      let quickchartButtonEl =\n",
-              "        document.querySelector('#df-b153dc4a-4687-4603-a72a-c4f6ba31df3c button');\n",
+              "        document.querySelector('#df-a8fbea75-1d97-485e-bbd1-fad72feba118 button');\n",
               "      quickchartButtonEl.style.display =\n",
               "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
               "    })();\n",
@@ -507,7 +514,7 @@
             }
           },
           "metadata": {},
-          "execution_count": 4
+          "execution_count": 65
         }
       ],
       "source": [
@@ -5526,29 +5533,295 @@
     {
       "cell_type": "code",
       "source": [
-        "streamlit\n",
-        "pandas\n",
-        "matplotlib\n"
+        "pip install -r requirements.txt"
       ],
       "metadata": {
         "colab": {
-          "base_uri": "https://localhost:8080/",
-          "height": 176
+          "base_uri": "https://localhost:8080/"
         },
-        "id": "lGRG41tIVPv0",
-        "outputId": "05eaf88f-0998-4b1c-d4e1-f1ab249c9e95"
+        "id": "HrcAZSJ3ayaj",
+        "outputId": "7b670648-de50-4849-f440-c9b6ae76f42c"
       },
-      "execution_count": 58,
+      "execution_count": 60,
       "outputs": [
         {
-          "output_type": "error",
-          "ename": "NameError",
-          "evalue": "name 'streamlit' is not defined",
-          "traceback": [
-            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
-            "\u001b[0;31mNameError\u001b[0m                                 Traceback (most recent call last)",
-            "\u001b[0;32m<ipython-input-58-b4f6223f848d>\u001b[0m in \u001b[0;36m<cell line: 0>\u001b[0;34m()\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mstreamlit\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      2\u001b[0m \u001b[0mpandas\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      3\u001b[0m \u001b[0mmatplotlib\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
-            "\u001b[0;31mNameError\u001b[0m: name 'streamlit' is not defined"
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Requirement already satisfied: streamlit in /usr/local/lib/python3.11/dist-packages (from -r requirements.txt (line 1)) (1.44.1)\n",
+            "Requirement already satisfied: pandas in /usr/local/lib/python3.11/dist-packages (from -r requirements.txt (line 2)) (2.2.2)\n",
+            "Requirement already satisfied: matplotlib in /usr/local/lib/python3.11/dist-packages (from -r requirements.txt (line 3)) (3.10.0)\n",
+            "Requirement already satisfied: seaborn in /usr/local/lib/python3.11/dist-packages (from -r requirements.txt (line 4)) (0.13.2)\n",
+            "Requirement already satisfied: scikit-learn in /usr/local/lib/python3.11/dist-packages (from -r requirements.txt (line 5)) (1.6.1)\n",
+            "Requirement already satisfied: numpy in /usr/local/lib/python3.11/dist-packages (from -r requirements.txt (line 6)) (2.0.2)\n",
+            "Requirement already satisfied: altair<6,>=4.0 in /usr/local/lib/python3.11/dist-packages (from streamlit->-r requirements.txt (line 1)) (5.5.0)\n",
+            "Requirement already satisfied: blinker<2,>=1.0.0 in /usr/local/lib/python3.11/dist-packages (from streamlit->-r requirements.txt (line 1)) (1.9.0)\n",
+            "Requirement already satisfied: cachetools<6,>=4.0 in /usr/local/lib/python3.11/dist-packages (from streamlit->-r requirements.txt (line 1)) (5.5.2)\n",
+            "Requirement already satisfied: click<9,>=7.0 in /usr/local/lib/python3.11/dist-packages (from streamlit->-r requirements.txt (line 1)) (8.1.8)\n",
+            "Requirement already satisfied: packaging<25,>=20 in /usr/local/lib/python3.11/dist-packages (from streamlit->-r requirements.txt (line 1)) (24.2)\n",
+            "Requirement already satisfied: pillow<12,>=7.1.0 in /usr/local/lib/python3.11/dist-packages (from streamlit->-r requirements.txt (line 1)) (11.1.0)\n",
+            "Requirement already satisfied: protobuf<6,>=3.20 in /usr/local/lib/python3.11/dist-packages (from streamlit->-r requirements.txt (line 1)) (5.29.4)\n",
+            "Requirement already satisfied: pyarrow>=7.0 in /usr/local/lib/python3.11/dist-packages (from streamlit->-r requirements.txt (line 1)) (18.1.0)\n",
+            "Requirement already satisfied: requests<3,>=2.27 in /usr/local/lib/python3.11/dist-packages (from streamlit->-r requirements.txt (line 1)) (2.32.3)\n",
+            "Requirement already satisfied: tenacity<10,>=8.1.0 in /usr/local/lib/python3.11/dist-packages (from streamlit->-r requirements.txt (line 1)) (9.1.2)\n",
+            "Requirement already satisfied: toml<2,>=0.10.1 in /usr/local/lib/python3.11/dist-packages (from streamlit->-r requirements.txt (line 1)) (0.10.2)\n",
+            "Requirement already satisfied: typing-extensions<5,>=4.4.0 in /usr/local/lib/python3.11/dist-packages (from streamlit->-r requirements.txt (line 1)) (4.13.1)\n",
+            "Requirement already satisfied: watchdog<7,>=2.1.5 in /usr/local/lib/python3.11/dist-packages (from streamlit->-r requirements.txt (line 1)) (6.0.0)\n",
+            "Requirement already satisfied: gitpython!=3.1.19,<4,>=3.0.7 in /usr/local/lib/python3.11/dist-packages (from streamlit->-r requirements.txt (line 1)) (3.1.44)\n",
+            "Requirement already satisfied: pydeck<1,>=0.8.0b4 in /usr/local/lib/python3.11/dist-packages (from streamlit->-r requirements.txt (line 1)) (0.9.1)\n",
+            "Requirement already satisfied: tornado<7,>=6.0.3 in /usr/local/lib/python3.11/dist-packages (from streamlit->-r requirements.txt (line 1)) (6.4.2)\n",
+            "Requirement already satisfied: python-dateutil>=2.8.2 in /usr/local/lib/python3.11/dist-packages (from pandas->-r requirements.txt (line 2)) (2.8.2)\n",
+            "Requirement already satisfied: pytz>=2020.1 in /usr/local/lib/python3.11/dist-packages (from pandas->-r requirements.txt (line 2)) (2025.2)\n",
+            "Requirement already satisfied: tzdata>=2022.7 in /usr/local/lib/python3.11/dist-packages (from pandas->-r requirements.txt (line 2)) (2025.2)\n",
+            "Requirement already satisfied: contourpy>=1.0.1 in /usr/local/lib/python3.11/dist-packages (from matplotlib->-r requirements.txt (line 3)) (1.3.1)\n",
+            "Requirement already satisfied: cycler>=0.10 in /usr/local/lib/python3.11/dist-packages (from matplotlib->-r requirements.txt (line 3)) (0.12.1)\n",
+            "Requirement already satisfied: fonttools>=4.22.0 in /usr/local/lib/python3.11/dist-packages (from matplotlib->-r requirements.txt (line 3)) (4.57.0)\n",
+            "Requirement already satisfied: kiwisolver>=1.3.1 in /usr/local/lib/python3.11/dist-packages (from matplotlib->-r requirements.txt (line 3)) (1.4.8)\n",
+            "Requirement already satisfied: pyparsing>=2.3.1 in /usr/local/lib/python3.11/dist-packages (from matplotlib->-r requirements.txt (line 3)) (3.2.3)\n",
+            "Requirement already satisfied: scipy>=1.6.0 in /usr/local/lib/python3.11/dist-packages (from scikit-learn->-r requirements.txt (line 5)) (1.14.1)\n",
+            "Requirement already satisfied: joblib>=1.2.0 in /usr/local/lib/python3.11/dist-packages (from scikit-learn->-r requirements.txt (line 5)) (1.4.2)\n",
+            "Requirement already satisfied: threadpoolctl>=3.1.0 in /usr/local/lib/python3.11/dist-packages (from scikit-learn->-r requirements.txt (line 5)) (3.6.0)\n",
+            "Requirement already satisfied: jinja2 in /usr/local/lib/python3.11/dist-packages (from altair<6,>=4.0->streamlit->-r requirements.txt (line 1)) (3.1.6)\n",
+            "Requirement already satisfied: jsonschema>=3.0 in /usr/local/lib/python3.11/dist-packages (from altair<6,>=4.0->streamlit->-r requirements.txt (line 1)) (4.23.0)\n",
+            "Requirement already satisfied: narwhals>=1.14.2 in /usr/local/lib/python3.11/dist-packages (from altair<6,>=4.0->streamlit->-r requirements.txt (line 1)) (1.33.0)\n",
+            "Requirement already satisfied: gitdb<5,>=4.0.1 in /usr/local/lib/python3.11/dist-packages (from gitpython!=3.1.19,<4,>=3.0.7->streamlit->-r requirements.txt (line 1)) (4.0.12)\n",
+            "Requirement already satisfied: six>=1.5 in /usr/local/lib/python3.11/dist-packages (from python-dateutil>=2.8.2->pandas->-r requirements.txt (line 2)) (1.17.0)\n",
+            "Requirement already satisfied: charset-normalizer<4,>=2 in /usr/local/lib/python3.11/dist-packages (from requests<3,>=2.27->streamlit->-r requirements.txt (line 1)) (3.4.1)\n",
+            "Requirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.11/dist-packages (from requests<3,>=2.27->streamlit->-r requirements.txt (line 1)) (3.10)\n",
+            "Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.11/dist-packages (from requests<3,>=2.27->streamlit->-r requirements.txt (line 1)) (2.3.0)\n",
+            "Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.11/dist-packages (from requests<3,>=2.27->streamlit->-r requirements.txt (line 1)) (2025.1.31)\n",
+            "Requirement already satisfied: smmap<6,>=3.0.1 in /usr/local/lib/python3.11/dist-packages (from gitdb<5,>=4.0.1->gitpython!=3.1.19,<4,>=3.0.7->streamlit->-r requirements.txt (line 1)) (5.0.2)\n",
+            "Requirement already satisfied: MarkupSafe>=2.0 in /usr/local/lib/python3.11/dist-packages (from jinja2->altair<6,>=4.0->streamlit->-r requirements.txt (line 1)) (3.0.2)\n",
+            "Requirement already satisfied: attrs>=22.2.0 in /usr/local/lib/python3.11/dist-packages (from jsonschema>=3.0->altair<6,>=4.0->streamlit->-r requirements.txt (line 1)) (25.3.0)\n",
+            "Requirement already satisfied: jsonschema-specifications>=2023.03.6 in /usr/local/lib/python3.11/dist-packages (from jsonschema>=3.0->altair<6,>=4.0->streamlit->-r requirements.txt (line 1)) (2024.10.1)\n",
+            "Requirement already satisfied: referencing>=0.28.4 in /usr/local/lib/python3.11/dist-packages (from jsonschema>=3.0->altair<6,>=4.0->streamlit->-r requirements.txt (line 1)) (0.36.2)\n",
+            "Requirement already satisfied: rpds-py>=0.7.1 in /usr/local/lib/python3.11/dist-packages (from jsonschema>=3.0->altair<6,>=4.0->streamlit->-r requirements.txt (line 1)) (0.24.0)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "st.title(\"Capstone-проект: Анализ оттока клиентов\")\n",
+        "\n",
+        "# Загрузка данных\n",
+        "st.header(\"Загрузка и отображение данных\")\n",
+        "df = pd.read_csv(\"telecom_churn.csv\")\n",
+        "st.write(\"Первые 5 строк:\", df.head())\n",
+        "st.write(\"Размер данных:\", df.shape)\n",
+        "\n",
+        "if st.checkbox(\"Показать описательную статистику\"):\n",
+        "    st.write(df.describe())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "6x6c9LJ8ddiu",
+        "outputId": "12aeed84-93c7-460d-95e5-5e46c6c782a3"
+      },
+      "execution_count": 67,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "2025-04-09 12:11:22.152 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.154 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.155 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.156 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.176 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.177 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.179 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.180 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.184 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.186 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.187 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.188 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.189 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.191 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.192 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.193 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.193 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.195 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:11:22.196 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Визуализация\n",
+        "st.header(\"Визуализация данных\")\n",
+        "if st.checkbox(\"Показать гистограммы\"):\n",
+        "    fig, ax = plt.subplots(figsize=(10, 6))\n",
+        "    df.hist(ax=ax)\n",
+        "    st.pyplot(fig)\n",
+        "\n",
+        "if st.checkbox(\"Распределение по классам\"):\n",
+        "    fig1, ax1 = plt.subplots()\n",
+        "    df[\"class\"].value_counts().plot(kind='pie', autopct='%1.1f%%', ax=ax1)\n",
+        "    ax1.set_ylabel('')\n",
+        "    st.pyplot(fig1)\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "fHHxyGzjdmd2",
+        "outputId": "8089a573-495a-4060-f956-95623d7ebb32"
+      },
+      "execution_count": 69,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "2025-04-09 12:12:02.896 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:02.905 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:02.907 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:02.908 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:02.909 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:02.910 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:02.911 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:02.913 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:02.917 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:02.918 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:02.919 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:02.920 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "# Корреляционная матрица\n",
+        "if st.checkbox(\"Показать корреляционную матрицу\"):\n",
+        "    fig2, ax2 = plt.subplots(figsize=(12, 10))\n",
+        "    sns.heatmap(df.corr(), annot=True, fmt=\".2f\", cmap=\"coolwarm\", ax=ax2)\n",
+        "    st.pyplot(fig2)\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "8COwm45tdrge",
+        "outputId": "1ea19680-9f90-4d52-b66a-aeb67d8129f9"
+      },
+      "execution_count": 70,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "2025-04-09 12:12:15.638 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:15.645 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:15.648 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:15.650 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:15.655 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "# Разделение на фичи и таргет\n",
+        "st.header(\"Обучение моделей\")\n",
+        "X = df.drop([\"class\", \"area_code\", \"phone_number\"], axis=1)\n",
+        "y = df[\"class\"]\n",
+        "\n",
+        "X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=150)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "pwlPgZjRdytn",
+        "outputId": "6a3a0a69-6667-4f4b-b07a-aa570338d23a"
+      },
+      "execution_count": 72,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "2025-04-09 12:12:38.590 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:38.599 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Обучение моделей\n",
+        "models = {\n",
+        "    \"Logistic Regression\": LogisticRegression(),\n",
+        "    \"SVM\": CalibratedClassifierCV(LinearSVC(max_iter=100000)),\n",
+        "    \"Random Forest\": RandomForestClassifier(),\n",
+        "    \"KNN\": KNeighborsClassifier(),\n",
+        "    \"Naive Bayes\": GaussianNB()\n",
+        "}\n",
+        "\n",
+        "selected_model = st.selectbox(\"Выберите модель для обучения\", list(models.keys()))\n",
+        "\n",
+        "if st.button(\"Обучить модель\"):\n",
+        "    model = models[selected_model]\n",
+        "    model.fit(X_train, y_train)\n",
+        "    y_pred = model.predict(X_test)\n",
+        "    st.subheader(\"Classification Report\")\n",
+        "    st.text(classification_report(y_test, y_pred))\n",
+        "\n",
+        "    cm = confusion_matrix(y_test, y_pred)\n",
+        "    fig_cm, ax_cm = plt.subplots()\n",
+        "    sns.heatmap(cm, annot=True, fmt=\"d\", ax=ax_cm)\n",
+        "    ax_cm.set_title(\"Confusion Matrix\")\n",
+        "    st.pyplot(fig_cm)\n",
+        "\n",
+        "    if hasattr(model, \"predict_proba\"):\n",
+        "        y_proba = model.predict_proba(X_test)[:, 1]\n",
+        "        fpr, tpr, _ = roc_curve(y_test, y_proba)\n",
+        "        auc = roc_auc_score(y_test, y_proba)\n",
+        "\n",
+        "        fig_roc, ax_roc = plt.subplots()\n",
+        "        ax_roc.plot(fpr, tpr, label=f\"ROC Curve (AUC = {auc:.2f})\")\n",
+        "        ax_roc.set_xlabel(\"False Positive Rate\")\n",
+        "        ax_roc.set_ylabel(\"True Positive Rate\")\n",
+        "        ax_roc.set_title(\"ROC Curve\")\n",
+        "        ax_roc.legend()\n",
+        "        st.pyplot(fig_roc)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "aYu4fltZd4R4",
+        "outputId": "a676cb85-bcd7-4e9e-fb0a-e1e2b1d58fac"
+      },
+      "execution_count": 73,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "2025-04-09 12:12:56.179 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:56.182 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:56.184 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:56.186 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:56.188 Session state does not function when running a script without `streamlit run`\n",
+            "2025-04-09 12:12:56.191 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:56.194 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:56.197 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:56.199 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:56.201 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:56.204 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 12:12:56.206 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n"
           ]
         }
       ]

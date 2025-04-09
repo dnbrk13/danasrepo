@@ -36,7 +36,7 @@
     },
     {
       "cell_type": "code",
-      "execution_count": null,
+      "execution_count": 59,
       "metadata": {
         "id": "-t-zM4ul3wCl"
       },
@@ -46,7 +46,8 @@
         "import pandas as pd\n",
         "import matplotlib.pyplot as plt\n",
         "import seaborn as sns\n",
-        "from sklearn import metrics\n"
+        "from sklearn import metrics\n",
+        "import streamlit as st\n"
       ]
     },
     {
@@ -5483,6 +5484,71 @@
             "Requirement already satisfied: referencing>=0.28.4 in /usr/local/lib/python3.11/dist-packages (from jsonschema>=3.0->altair<6,>=4.0->streamlit) (0.36.2)\n",
             "Requirement already satisfied: rpds-py>=0.7.1 in /usr/local/lib/python3.11/dist-packages (from jsonschema>=3.0->altair<6,>=4.0->streamlit) (0.24.0)\n",
             "Requirement already satisfied: six>=1.5 in /usr/local/lib/python3.11/dist-packages (from python-dateutil>=2.8.2->pandas<3,>=1.4.0->streamlit) (1.17.0)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import streamlit as st\n",
+        "import pandas as pd\n",
+        "import matplotlib.pyplot as plt\n",
+        "\n",
+        "st.title(\"Анализ данных Capstone-проекта\")\n",
+        "\n",
+        "# Пример: загрузка данных\n",
+        "df = pd.read_csv(\"telecom_churn.csv\")\n",
+        "st.write(df.head())\n",
+        "\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "4vpcF6J_U1IK",
+        "outputId": "3ecf1a4c-7c93-4b8d-ee6a-0258ac3d7911"
+      },
+      "execution_count": 57,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "2025-04-09 11:34:42.868 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 11:34:42.872 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 11:34:42.897 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n",
+            "2025-04-09 11:34:42.901 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "streamlit\n",
+        "pandas\n",
+        "matplotlib\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 176
+        },
+        "id": "lGRG41tIVPv0",
+        "outputId": "05eaf88f-0998-4b1c-d4e1-f1ab249c9e95"
+      },
+      "execution_count": 58,
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "NameError",
+          "evalue": "name 'streamlit' is not defined",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+            "\u001b[0;32m<ipython-input-58-b4f6223f848d>\u001b[0m in \u001b[0;36m<cell line: 0>\u001b[0;34m()\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mstreamlit\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      2\u001b[0m \u001b[0mpandas\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      3\u001b[0m \u001b[0mmatplotlib\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mNameError\u001b[0m: name 'streamlit' is not defined"
           ]
         }
       ]

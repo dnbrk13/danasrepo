@@ -20,12 +20,20 @@ st.title("📊 Развернутая аналитика оттока клиен
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv("telecom_churn.csv")
-    df = df.convert_dtypes().fillna(0)
+    df = pd.read_csv("telecom_churn.csv").fillna(0)
+
+    # Принудительно создаём обычный DataFrame с правильными типами
+    new_df = pd.DataFrame()
+
     for col in df.columns:
-        if "Int" in str(df[col].dtype):
-            df[col] = df[col].astype("float64")
-    return df
+        try:
+            new_df[col] = np.array(df[col], dtype=np.float64)
+        except:
+            new_df[col] = df[col].astype(str)
+
+    return new_df
+
+
 
 df = load_data()
 st.subheader("📄 Предварительный просмотр данных")
@@ -44,9 +52,8 @@ st.write("### Типы данных")
 st.write(df.dtypes)
 
 st.subheader("📊 Гистограммы признаков")
-fig = plt.figure(figsize=(25, 25))
-df.hist(ax=plt.gca(), bins=30)
-st.pyplot(fig)
+df.hist(figsize=(25, 25), bins=30)
+st.pyplot(plt.gcf())
 
 st.subheader("📈 Распределение целевого признака (class)")
 fig, ax = plt.subplots()
